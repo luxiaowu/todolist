@@ -3,7 +3,7 @@
     <h1>TODO</h1>
     <group title="你想干嘛">
       <x-input placeholder="What needs to be done?" v-model="msg" @on-enter="addNewItem"></x-input>
-      <checklist :options="list" is-link></checklist>
+      <checklist :options="list" v-model="checklist" @on-change="change"></checklist>
       <!--<cell v-for="item in items" :title="item.label" is-link></cell>-->
     </group>
   </div>
@@ -11,6 +11,7 @@
 
 <script>
   import {Group, Cell, XInput, Checklist} from 'vux'
+  import utils from '../utils'
 
   export default {
     components: {
@@ -21,27 +22,22 @@
     },
     data() {
       return {
-        items: [
-          {
-            label: '边城',
-            isFinished: true
-          },
-          {
-            label: '围城',
-            isFinished: false
-          }
-        ],
         msg: '',
-        list: ['边城', '围城']
+        list: utils.read('list'),
+        checklist: utils.read('checklist')
       }
     },
     methods: {
-      addNewItem: function () {
+      addNewItem() {
         if (this.msg) {
-//          this.items.unshift({label: this.msg, isFinished: false})
           this.list.unshift(this.msg)
           this.msg = ''
+          utils.write('list', this.list)
         }
+      },
+      change(label) {
+        console.log(this.checklist)
+        utils.write('checklist', this.checklist)
       }
     }
   }
